@@ -43,6 +43,18 @@ function githubPath(filePath) {
 for (const filePath of listFiles(root)) {
   const path = githubPath(filePath);
   const content = readFileSync(filePath).toString("base64");
+  const existing = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+    {
+      headers: {
+        "Accept": "application/vnd.github+json",
+        "Authorization": `Bearer ${token}`,
+        "User-Agent": "codex-mcp-environment-publisher",
+        "X-GitHub-Api-Version": "2022-11-28"
+      }
+    }
+  );
+  const current = existing.ok ? await existing.json() : undefined;
   const response = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
     {
@@ -54,8 +66,9 @@ for (const filePath of listFiles(root)) {
         "X-GitHub-Api-Version": "2022-11-28"
       },
       body: JSON.stringify({
-        message: `Add ${relative(root, filePath)}`,
-        content
+        message: `${current?.sha ? "Update" : "Add"} ${relative(root, filePath)}`,
+        content,
+        sha: current?.sha
       })
     }
   );
