@@ -30,8 +30,8 @@ After installing dependencies and building the project, add an MCP server entry 
 
 ```toml
 [mcp_servers.codex_mcp_environment]
-command = "node"
-args = ["/Users/mprez/Documents/Codex/2026-05-27/help-me-create-a-new-environment/dist/index.js"]
+command = "/bin/bash"
+args = ["-lc", "exec node \"$HOME/Documents/Codex/2026-05-27/help-me-create-a-new-environment/dist/index.js\""]
 env = { MCP_SERVER_NAME = "codex-mcp-environment" }
 ```
 
